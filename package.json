@@ -1,0 +1,27 @@
+{
+  "name": "tyre",
+  "version": "0.1.0",
+  "description": "A port of ReasonReact and reactive to Typescript",
+  "main": "dist/index.js",
+  "repository": "git@github.com:dmitriid/tyre.git",
+  "author": "Dmitrii Dimandt <dmitrii@dmitriid.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "webpack"
+  },
+  "devDependencies": {
+    "@types/react": "^16.0.9",
+    "@types/react-dom": "^16.0.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.0",
+    "ts-loader": "^2.3.7",
+    "typescript": "^2.5.3",
+    "webpack": "^3.6.0"
+  },
+  "dependencies": {
+    "babel-core": "^6.26.0",
+    "babel-polyfill": "^6.26.0",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0"
+  }
+}
