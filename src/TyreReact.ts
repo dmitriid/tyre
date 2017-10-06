@@ -324,7 +324,7 @@ export namespace Tyre {
 
                 nextState.reasonStateVersionUsedToComputeSubelements = nextReasonStateVersion
                 if (nextState.sideEffects.length !== 0) {
-                    for (let i = nextState.sideEffects.length - 1; i >= 0; i++) {
+                    for (let i = nextState.sideEffects.length - 1; i >= 0; i--) {
                         (nextState.sideEffects[i])(newSelf)
                     }
 

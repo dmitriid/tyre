@@ -18,8 +18,9 @@ interface State {
 enum Action {
     Increment = 0,
     Decrement,
-    DecrementSilent,
-    Tick
+    SilentDecrement,
+    Tick,
+    SideEffect,
 }
 
 type DataAction = { tag: number, data: number }
@@ -56,10 +57,12 @@ const CoRe = createReducerComponent<Props, State, AllActions>('CoRe', {
                 return Tyre.Update({...state, count: state.count + 1})
             case Action.Decrement:
                 return Tyre.Update({...state, count: state.count - 1})
-            case Action.DecrementSilent:
+            case Action.SilentDecrement:
                 return Tyre.SilentUpdate({...state, count: state.count - 1})
             case Action.Tick:
                 return Tyre.Update({...state, count: state.count + 1})
+            case Action.SideEffect:
+                return Tyre.SideEffects((self) => console.log(self))
             default:
                 const {tag, data} = action
                 switch (tag) {
@@ -71,15 +74,22 @@ const CoRe = createReducerComponent<Props, State, AllActions>('CoRe', {
     render: (self, props) => <div>
         aaa
         <div style={{width: '200px', height: '200px', backgroundColor: '#eee'}}
-             onMouseMove={self.reduce(() => Action.DecrementSilent)}>{props.a}</div>
+             onMouseMove={self.reduce(() => Action.SilentDecrement)}>{props.a}</div>
         <div>{self.state.count}</div>
         <div>{props.children}</div>
-        <button onClick={self.handle(click)}>Click here</button>
+        <button onClick={self.handle(click)}>Click here (self.handle, see console)</button>
+        <br/>
+        <br/>
         <button onClick={self.reduce((e) => Action.Increment)}>Increment</button>
         <button onClick={self.reduce((e) => Action.Decrement)}>Decrement</button>
+        <br/>
+        <br/>
+        <button onClick={self.reduce((e) => Action.SideEffect)}>SideEffect (see console)</button>
+        <br/>
+        <br/>
         <button onClick={self.reduce((e) => {
             return {tag: Action.Increment, data: 100}
-        })}>Increment by 100
+        })}>Increment by 100 (action with payload)
         </button>
     </div>
 })

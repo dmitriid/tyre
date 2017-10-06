@@ -9923,8 +9923,9 @@ var Action;
 (function (Action) {
     Action[Action["Increment"] = 0] = "Increment";
     Action[Action["Decrement"] = 1] = "Decrement";
-    Action[Action["DecrementSilent"] = 2] = "DecrementSilent";
+    Action[Action["SilentDecrement"] = 2] = "SilentDecrement";
     Action[Action["Tick"] = 3] = "Tick";
+    Action[Action["SideEffect"] = 4] = "SideEffect";
 })(Action || (Action = {}));
 var Co = createStatelessComponent('Co', {
     render: function render(self, props) {
@@ -9951,10 +9952,14 @@ var CoRe = createReducerComponent('CoRe', {
                 return __WEBPACK_IMPORTED_MODULE_2__TyreReact__["a" /* Tyre */].Update(Object.assign({}, state, { count: state.count + 1 }));
             case Action.Decrement:
                 return __WEBPACK_IMPORTED_MODULE_2__TyreReact__["a" /* Tyre */].Update(Object.assign({}, state, { count: state.count - 1 }));
-            case Action.DecrementSilent:
+            case Action.SilentDecrement:
                 return __WEBPACK_IMPORTED_MODULE_2__TyreReact__["a" /* Tyre */].SilentUpdate(Object.assign({}, state, { count: state.count - 1 }));
             case Action.Tick:
                 return __WEBPACK_IMPORTED_MODULE_2__TyreReact__["a" /* Tyre */].Update(Object.assign({}, state, { count: state.count + 1 }));
+            case Action.SideEffect:
+                return __WEBPACK_IMPORTED_MODULE_2__TyreReact__["a" /* Tyre */].SideEffects(function (self) {
+                    return console.log(self);
+                });
             default:
                 var tag = action.tag,
                     data = action.data;
@@ -9967,14 +9972,16 @@ var CoRe = createReducerComponent('CoRe', {
     },
     render: function render(self, props) {
         return __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("div", null, "aaa", __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("div", { style: { width: '200px', height: '200px', backgroundColor: '#eee' }, onMouseMove: self.reduce(function () {
-                return Action.DecrementSilent;
-            }) }, props.a), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("div", null, self.state.count), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("div", null, props.children), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("button", { onClick: self.handle(click) }, "Click here"), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("button", { onClick: self.reduce(function (e) {
+                return Action.SilentDecrement;
+            }) }, props.a), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("div", null, self.state.count), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("div", null, props.children), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("button", { onClick: self.handle(click) }, "Click here (self.handle, see console)"), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("br", null), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("br", null), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("button", { onClick: self.reduce(function (e) {
                 return Action.Increment;
             }) }, "Increment"), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("button", { onClick: self.reduce(function (e) {
                 return Action.Decrement;
-            }) }, "Decrement"), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("button", { onClick: self.reduce(function (e) {
+            }) }, "Decrement"), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("br", null), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("br", null), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("button", { onClick: self.reduce(function (e) {
+                return Action.SideEffect;
+            }) }, "SideEffect (see console)"), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("br", null), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("br", null), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("button", { onClick: self.reduce(function (e) {
                 return { tag: Action.Increment, data: 100 };
-            }) }, "Increment by 100"));
+            }) }, "Increment by 100 (action with payload)"));
     }
 });
 __WEBPACK_IMPORTED_MODULE_1_react_dom__["render"](__WEBPACK_IMPORTED_MODULE_0_react__["createElement"](CoRe, { a: "a" }, __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("div", null, "child"), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](Co, { a: "c0 --- aaaaa" }, __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("div", null, "co---child"))), document.getElementById('app'));
@@ -30462,7 +30469,7 @@ var Tyre;
                     }
                     nextState.reasonStateVersionUsedToComputeSubelements = nextReasonStateVersion;
                     if (nextState.sideEffects.length !== 0) {
-                        for (var i = nextState.sideEffects.length - 1; i >= 0; i++) {
+                        for (var i = nextState.sideEffects.length - 1; i >= 0; i--) {
                             nextState.sideEffects[i](newSelf);
                         }
                         var nextStateNoSideEffects = {
