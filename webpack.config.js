@@ -1,4 +1,5 @@
 module.exports = {
+    devtool: 'source-map',
     entry: ['babel-polyfill', './src/index.tsx'],
     output: {
         filename: 'bundle.js',
@@ -12,5 +13,8 @@ module.exports = {
                 exclude: /node_modules/,
             },
         ]
+    },
+    resolve: {
+        extensions: [".tsx", ".ts", ".js"]
     }
 };
