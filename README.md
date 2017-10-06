@@ -19,7 +19,7 @@ A very straightforward copy-paste of ReasonReact:
 
 Everything in the docs up to and including "Lifecycles" should work.
 
-- Implementation in [src/TyreReact.tsx](src/TyreReact.tsx).
+- Implementation in [src/TyreReact.tsx](src/TyreReact.ts).
 - Usage exmple in [src/index.tsx](src/index.tsx)
 
 
