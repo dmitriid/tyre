@@ -30371,7 +30371,6 @@ var Tyre;
                     var curReasonState = curState.reasonState;
                     var newJsProps = thisJs.props;
                     if (spec.didUpdate) {
-                        var match = +(prevProps === newJsProps);
                         var prevReasonState = prevState.reasonState;
                         var newSelf = $$this.self(curReasonState, newJsProps);
                         var oldSelf = Object.assign({}, newSelf, { state: prevReasonState, retainedProps: prevProps });
@@ -30399,9 +30398,6 @@ var Tyre;
                     var $$this = this;
                     var thisJs = this;
                     if (spec.willUpdate) {
-                        var oldJsProps = thisJs.props;
-                        var match = +(nextProps === oldJsProps);
-                        var oldConvertedReasonProps = this.props;
                         var curState = thisJs.state;
                         var curReasonState = curState.reasonState;
                         var nextReasonState = nextState.reasonState;
@@ -30418,10 +30414,8 @@ var Tyre;
                     var $$this = this;
                     var thisJs = this;
                     if (spec.willReceiveProps) {
-                        var oldJsProps = thisJs.props;
-                        var match = +(nextProps === oldJsProps);
                         var oldConvertedReasonProps = $$this.props;
-                        return thisJs.setState(function (curTotalState, _) {
+                        return thisJs.setState(function (curTotalState) {
                             var curReasonState = curTotalState.reasonState;
                             var curReasonStateVersion = curTotalState.reasonStateVersion;
                             var oldSelf = $$this.self(curReasonState, oldConvertedReasonProps);
@@ -30450,8 +30444,6 @@ var Tyre;
                     var thisJs = this;
                     var curJsProps = thisJs.props;
                     var propsWarrantRerender = nextJsProps !== curJsProps;
-                    var oldConvertedReasonProps = this.props;
-                    var match = +(nextJsProps === curJsProps);
                     var nextReasonStateVersion = nextState.reasonStateVersion;
                     var nextReasonStateVersionUsedToComputeSubelements = nextState.reasonStateVersionUsedToComputeSubelements;
                     var stateChangeWarrantsComputingSubelements = nextReasonStateVersionUsedToComputeSubelements !== nextReasonStateVersion;

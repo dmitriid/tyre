@@ -96,7 +96,7 @@ export namespace Tyre {
                 }
             }
 
-            self(state: State, props: Props) {
+            private self(state: State, props: Props) {
                 return {
                     state: state,
                     retainedProps: props,
@@ -105,7 +105,7 @@ export namespace Tyre {
                 } as TyreSelf<Props, State, Action>
             }
 
-            transitionNextTotalState(curTotalState: InternalTyreState<State>, reasonStateUpdate: UpdateTag<State>): InternalTyreState<State> {
+            private transitionNextTotalState(curTotalState: InternalTyreState<State>, reasonStateUpdate: UpdateTag<State>): InternalTyreState<State> {
                 switch (reasonStateUpdate.tag | 0) {
                     case UpdateTypes.NoUpdate :
                         return curTotalState
@@ -156,7 +156,7 @@ export namespace Tyre {
                 }
             }
 
-            handleMethod(callback: TyreHandlerCallback<Props, State, Action>) {
+            private handleMethod(callback: TyreHandlerCallback<Props, State, Action>) {
                 const $$this = this
                 const thisJs = (this)
                 return function (callbackPayload) {
@@ -167,7 +167,7 @@ export namespace Tyre {
                 } as ((payload: any) => void)
             }
 
-            reduceMethod(callback: TyreReducerCallback<Action>) {
+            private reduceMethod(callback: TyreReducerCallback<Action>) {
                 const $$this = this
                 return function ($$event: Action) {
                     const action = callback($$event)
@@ -188,7 +188,7 @@ export namespace Tyre {
                 }
             }
 
-            componentDidMount() {
+            public componentDidMount() {
                 if (spec.didMount) {
                     const curTotalState = this.state
                     const curReasonState = curTotalState.reasonState
@@ -205,14 +205,13 @@ export namespace Tyre {
                 }
             }
 
-            componentDidUpdate(prevProps: Props, prevState: InternalTyreState<State>) {
+            public componentDidUpdate(prevProps: Props, prevState: InternalTyreState<State>) {
                 const $$this = this
                 const thisJs = (this)
                 const curState = thisJs.state
                 const curReasonState = curState.reasonState
                 const newJsProps = thisJs.props
                 if (spec.didUpdate) {
-                    const match = +(prevProps === newJsProps)
                     const prevReasonState = prevState.reasonState
                     const newSelf = $$this.self(curReasonState, newJsProps)
                     const oldSelf: TyreSelf<Props, State, Action> = {
@@ -227,7 +226,7 @@ export namespace Tyre {
                 }
             }
 
-            componentWillUnmount() {
+            public componentWillUnmount() {
                 const $$this = this
                 const thisJs = (this)
                 if (spec.willUnmount) {
@@ -239,13 +238,10 @@ export namespace Tyre {
                 }
             }
 
-            componentWillUpdate(nextProps: Props, nextState: InternalTyreState<State>) {
+            public componentWillUpdate(nextProps: Props, nextState: InternalTyreState<State>) {
                 const $$this = this
                 const thisJs = (this)
                 if (spec.willUpdate) {
-                    const oldJsProps = thisJs.props
-                    const match = +(nextProps === oldJsProps)
-                    const oldConvertedReasonProps = this.props
                     const curState = thisJs.state
                     const curReasonState = curState.reasonState
                     const nextReasonState = nextState.reasonState
@@ -263,14 +259,12 @@ export namespace Tyre {
                 }
             }
 
-            componentWillReceiveProps(nextProps: Props) {
+            public componentWillReceiveProps(nextProps: Props) {
                 const $$this = this
                 const thisJs = (this)
                 if (spec.willReceiveProps) {
-                    const oldJsProps = thisJs.props
-                    const match = +(nextProps === oldJsProps)
                     const oldConvertedReasonProps = $$this.props
-                    return thisJs.setState((function (curTotalState, _) {
+                    return thisJs.setState((function (curTotalState) {
                         const curReasonState = curTotalState.reasonState
                         const curReasonStateVersion = curTotalState.reasonStateVersion
                         const oldSelf = $$this.self(curReasonState, oldConvertedReasonProps)
@@ -293,13 +287,11 @@ export namespace Tyre {
                 }
             }
 
-            shouldComponentUpdate(nextJsProps: Props, nextState: InternalTyreState<State>) {
+            public shouldComponentUpdate(nextJsProps: Props, nextState: InternalTyreState<State>) {
                 const $$this = this
                 const thisJs = (this)
                 const curJsProps = thisJs.props
                 const propsWarrantRerender = nextJsProps !== curJsProps
-                const oldConvertedReasonProps = this.props
-                const match = +(nextJsProps === curJsProps)
                 const nextReasonStateVersion = nextState.reasonStateVersion
                 const nextReasonStateVersionUsedToComputeSubelements = nextState.reasonStateVersionUsedToComputeSubelements
                 const stateChangeWarrantsComputingSubelements = nextReasonStateVersionUsedToComputeSubelements !== nextReasonStateVersion
@@ -340,7 +332,7 @@ export namespace Tyre {
             }
 
 
-            render() {
+            public render() {
                 return spec.render(this.self(this.state.reasonState, this.props), this.props)
             }
         };
