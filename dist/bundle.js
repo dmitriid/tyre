@@ -30261,11 +30261,17 @@ var Tyre;
             _createClass(Tyre, [{
                 key: "self",
                 value: function self(state, props) {
+                    var _this2 = this;
+
                     return {
                         state: state,
                         retainedProps: props,
-                        handle: this.handleMethod.bind(this),
-                        reduce: this.reduceMethod.bind(this)
+                        handle: function handle(callback) {
+                            return _this2.handleMethod(callback);
+                        },
+                        reduce: function reduce(callback) {
+                            return _this2.reduceMethod(callback);
+                        }
                     };
                 }
             }, {
@@ -30314,25 +30320,26 @@ var Tyre;
             }, {
                 key: "handleMethod",
                 value: function handleMethod(callback) {
-                    var $$this = this;
-                    var thisJs = this;
-                    return function (callbackPayload) {
-                        var curState = thisJs.state;
+                    var _this3 = this;
+
+                    return function (payload) {
+                        var curState = _this3.state;
                         var curReasonState = curState.reasonState;
-                        return callback(callbackPayload, $$this.self(curReasonState, thisJs.props));
+                        return callback(payload, _this3.self(curReasonState, _this3.props));
                     };
                 }
             }, {
                 key: "reduceMethod",
                 value: function reduceMethod(callback) {
-                    var $$this = this;
-                    return function ($$event) {
-                        var action = callback($$event);
-                        return $$this.setState(function (curTotalState) {
+                    var _this4 = this;
+
+                    return function (event) {
+                        var action = callback(event);
+                        return _this4.setState(function (curTotalState) {
                             var curReasonState = curTotalState.reasonState;
                             var reasonStateUpdate = spec.reducer(action, curReasonState);
                             if (reasonStateUpdate) {
-                                var nextTotalState = $$this.transitionNextTotalState(curTotalState, reasonStateUpdate);
+                                var nextTotalState = _this4.transitionNextTotalState(curTotalState, reasonStateUpdate);
                                 if (nextTotalState.reasonStateVersion !== curTotalState.reasonStateVersion) {
                                     return nextTotalState;
                                 } else {
@@ -30365,14 +30372,12 @@ var Tyre;
             }, {
                 key: "componentDidUpdate",
                 value: function componentDidUpdate(prevProps, prevState) {
-                    var $$this = this;
-                    var thisJs = this;
-                    var curState = thisJs.state;
+                    var curState = this.state;
                     var curReasonState = curState.reasonState;
-                    var newJsProps = thisJs.props;
+                    var newJsProps = this.props;
                     if (spec.didUpdate) {
                         var prevReasonState = prevState.reasonState;
-                        var newSelf = $$this.self(curReasonState, newJsProps);
+                        var newSelf = this.self(curReasonState, newJsProps);
                         var oldSelf = Object.assign({}, newSelf, { state: prevReasonState, retainedProps: prevProps });
                         return spec.didUpdate(oldSelf, newSelf);
                     } else {
@@ -30382,12 +30387,10 @@ var Tyre;
             }, {
                 key: "componentWillUnmount",
                 value: function componentWillUnmount() {
-                    var $$this = this;
-                    var thisJs = this;
                     if (spec.willUnmount) {
-                        var curState = thisJs.state;
+                        var curState = this.state;
                         var curReasonState = curState.reasonState;
-                        return spec.willUnmount($$this.self(curReasonState, $$this.props));
+                        return spec.willUnmount(this.self(curReasonState, this.props));
                     } else {
                         return 0;
                     }
@@ -30395,14 +30398,12 @@ var Tyre;
             }, {
                 key: "componentWillUpdate",
                 value: function componentWillUpdate(nextProps, nextState) {
-                    var $$this = this;
-                    var thisJs = this;
                     if (spec.willUpdate) {
-                        var curState = thisJs.state;
+                        var curState = this.state;
                         var curReasonState = curState.reasonState;
                         var nextReasonState = nextState.reasonState;
-                        var newSelf = $$this.self(nextReasonState, nextProps);
-                        var oldSelf = Object.assign({}, newSelf, { state: curReasonState, retainedProps: $$this.props });
+                        var newSelf = this.self(nextReasonState, nextProps);
+                        var oldSelf = Object.assign({}, newSelf, { state: curReasonState, retainedProps: this.props });
                         return spec.willUpdate(oldSelf, newSelf);
                     } else {
                         return 0;
@@ -30411,16 +30412,16 @@ var Tyre;
             }, {
                 key: "componentWillReceiveProps",
                 value: function componentWillReceiveProps(nextProps) {
-                    var $$this = this;
-                    var thisJs = this;
+                    var _this5 = this;
+
                     if (spec.willReceiveProps) {
-                        var oldConvertedReasonProps = $$this.props;
-                        return thisJs.setState(function (curTotalState) {
+                        var oldConvertedReasonProps = this.props;
+                        return this.setState(function (curTotalState) {
                             var curReasonState = curTotalState.reasonState;
                             var curReasonStateVersion = curTotalState.reasonStateVersion;
-                            var oldSelf = $$this.self(curReasonState, oldConvertedReasonProps);
+                            var oldSelf = _this5.self(curReasonState, oldConvertedReasonProps);
                             var nextState = spec.willReceiveProps(oldSelf);
-                            var nextReasonState = $$this.transitionNextTotalState(curTotalState, nextState);
+                            var nextReasonState = _this5.transitionNextTotalState(curTotalState, nextState);
                             var nextReasonStateVersion = nextReasonState.reasonStateVersion;
                             if (nextReasonStateVersion !== curReasonStateVersion) {
                                 return {
@@ -30440,21 +30441,19 @@ var Tyre;
             }, {
                 key: "shouldComponentUpdate",
                 value: function shouldComponentUpdate(nextJsProps, nextState) {
-                    var $$this = this;
-                    var thisJs = this;
-                    var curJsProps = thisJs.props;
+                    var curJsProps = this.props;
                     var propsWarrantRerender = nextJsProps !== curJsProps;
                     var nextReasonStateVersion = nextState.reasonStateVersion;
                     var nextReasonStateVersionUsedToComputeSubelements = nextState.reasonStateVersionUsedToComputeSubelements;
                     var stateChangeWarrantsComputingSubelements = nextReasonStateVersionUsedToComputeSubelements !== nextReasonStateVersion;
                     var warrantsUpdate = propsWarrantRerender || stateChangeWarrantsComputingSubelements;
                     var nextReasonState = nextState.reasonState;
-                    var newSelf = $$this.self(nextReasonState, nextJsProps);
+                    var newSelf = this.self(nextReasonState, nextJsProps);
                     var ret = null;
                     if (warrantsUpdate && spec.shouldUpdate) {
-                        var curState = thisJs.state;
+                        var curState = this.state;
                         var curReasonState = curState.reasonState;
-                        var oldSelf = Object.assign({}, newSelf, { state: curReasonState, retainedProps: $$this.props });
+                        var oldSelf = Object.assign({}, newSelf, { state: curReasonState, retainedProps: this.props });
                         ret = spec.shouldUpdate(oldSelf, newSelf);
                     } else {
                         ret = warrantsUpdate;
@@ -30470,7 +30469,7 @@ var Tyre;
                             reasonStateVersionUsedToComputeSubelements: nextReasonStateVersion,
                             sideEffects: []
                         };
-                        thisJs.setState(nextStateNoSideEffects);
+                        this.setState(nextStateNoSideEffects);
                     }
                     return ret;
                 }

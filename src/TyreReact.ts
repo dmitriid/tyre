@@ -99,8 +99,8 @@ export namespace Tyre {
         return {
           state: state,
           retainedProps: props,
-          handle: this.handleMethod.bind(this),
-          reduce: this.reduceMethod.bind(this)
+          handle: (callback : TyreHandlerCallback<Props, State, Action>) => this.handleMethod(callback),
+          reduce: (callback : TyreReducerCallback<Action>) => this.reduceMethod(callback)
         }
       }
 
@@ -156,25 +156,22 @@ export namespace Tyre {
       }
 
       private handleMethod(callback : TyreHandlerCallback<Props, State, Action>) : TyrePayloadFunction {
-        const $$this = this
-        const thisJs = (this)
-        return function (callbackPayload) {
-          const curState       = thisJs.state
+        return (payload : any) : void => {
+          const curState       = this.state
           const curReasonState = curState.reasonState
 
-          return callback(callbackPayload, $$this.self(curReasonState, thisJs.props))
-        } as ((payload : any) => void)
+          return callback(payload, this.self(curReasonState, this.props))
+        }
       }
 
       private reduceMethod(callback : TyreReducerCallback<Action>) : TyrePayloadFunction {
-        const $$this = this
-        return function ($$event : Action) {
-          const action = callback($$event)
-          return $$this.setState(function (curTotalState) {
+        return (event : Action) => {
+          const action = callback(event)
+          return this.setState((curTotalState) => {
             const curReasonState    = curTotalState.reasonState
             const reasonStateUpdate = spec.reducer(action, curReasonState)
             if (reasonStateUpdate) {
-              const nextTotalState = $$this.transitionNextTotalState(curTotalState, reasonStateUpdate)
+              const nextTotalState = this.transitionNextTotalState(curTotalState, reasonStateUpdate)
               if (nextTotalState.reasonStateVersion !== curTotalState.reasonStateVersion) {
                 return nextTotalState
               } else {
@@ -205,14 +202,12 @@ export namespace Tyre {
       }
 
       public componentDidUpdate(prevProps : Props, prevState : InternalTyreState<State>) {
-        const $$this         = this
-        const thisJs         = (this)
-        const curState       = thisJs.state
+        const curState       = this.state
         const curReasonState = curState.reasonState
-        const newJsProps     = thisJs.props
+        const newJsProps     = this.props
         if (spec.didUpdate) {
           const prevReasonState                          = prevState.reasonState
-          const newSelf                                  = $$this.self(curReasonState, newJsProps)
+          const newSelf                                  = this.self(curReasonState, newJsProps)
           const oldSelf : TyreSelf<Props, State, Action> = {
             ...newSelf,
             state: prevReasonState,
@@ -226,30 +221,26 @@ export namespace Tyre {
       }
 
       public componentWillUnmount() {
-        const $$this = this
-        const thisJs = (this)
         if (spec.willUnmount) {
-          const curState       = thisJs.state
+          const curState       = this.state
           const curReasonState = curState.reasonState
-          return spec.willUnmount($$this.self(curReasonState, $$this.props))
+          return spec.willUnmount(this.self(curReasonState, this.props))
         } else {
           return 0
         }
       }
 
       public componentWillUpdate(nextProps : Props, nextState : InternalTyreState<State>) {
-        const $$this = this
-        const thisJs = (this)
         if (spec.willUpdate) {
-          const curState        = thisJs.state
+          const curState        = this.state
           const curReasonState  = curState.reasonState
           const nextReasonState = nextState.reasonState
-          const newSelf         = $$this.self(nextReasonState, nextProps)
+          const newSelf         = this.self(nextReasonState, nextProps)
 
           const oldSelf = {
             ...newSelf,
             state: curReasonState,
-            retainedProps: $$this.props
+            retainedProps: this.props
           }
 
           return spec.willUpdate(oldSelf, newSelf)
@@ -259,16 +250,14 @@ export namespace Tyre {
       }
 
       public componentWillReceiveProps(nextProps : Props) {
-        const $$this = this
-        const thisJs = (this)
         if (spec.willReceiveProps) {
-          const oldConvertedReasonProps = $$this.props
-          return thisJs.setState((function (curTotalState) {
+          const oldConvertedReasonProps = this.props
+          return this.setState((curTotalState) => {
             const curReasonState         = curTotalState.reasonState
             const curReasonStateVersion  = curTotalState.reasonStateVersion
-            const oldSelf                = $$this.self(curReasonState, oldConvertedReasonProps)
+            const oldSelf                = this.self(curReasonState, oldConvertedReasonProps)
             const nextState              = spec.willReceiveProps(oldSelf)
-            const nextReasonState        = $$this.transitionNextTotalState(curTotalState, nextState)
+            const nextReasonState        = this.transitionNextTotalState(curTotalState, nextState)
             const nextReasonStateVersion = nextReasonState.reasonStateVersion
             if (nextReasonStateVersion !== curReasonStateVersion) {
               return {
@@ -280,32 +269,30 @@ export namespace Tyre {
             } else {
               return curTotalState
             }
-          }))
+          })
         } else {
           return 0
         }
       }
 
       public shouldComponentUpdate(nextJsProps : Props, nextState : InternalTyreState<State>) {
-        const $$this                                         = this
-        const thisJs                                         = (this)
-        const curJsProps                                     = thisJs.props
+        const curJsProps                                     = this.props
         const propsWarrantRerender                           = nextJsProps !== curJsProps
         const nextReasonStateVersion                         = nextState.reasonStateVersion
         const nextReasonStateVersionUsedToComputeSubelements = nextState.reasonStateVersionUsedToComputeSubelements
         const stateChangeWarrantsComputingSubelements        = nextReasonStateVersionUsedToComputeSubelements !== nextReasonStateVersion
         const warrantsUpdate                                 = propsWarrantRerender || stateChangeWarrantsComputingSubelements
         const nextReasonState                                = nextState.reasonState
-        const newSelf                                        = $$this.self(nextReasonState, nextJsProps)
+        const newSelf                                        = this.self(nextReasonState, nextJsProps)
         let ret                                              = null
         if (warrantsUpdate && spec.shouldUpdate) {
-          const curState       = thisJs.state
+          const curState       = this.state
           const curReasonState = curState.reasonState
 
           const oldSelf = {
             ...newSelf,
             state: curReasonState,
-            retainedProps: $$this.props
+            retainedProps: this.props
           }
 
           ret = spec.shouldUpdate(oldSelf, newSelf)
@@ -325,7 +312,7 @@ export namespace Tyre {
             reasonStateVersionUsedToComputeSubelements: nextReasonStateVersion,
             sideEffects: [] as SideEffectFun<State>[]
           }
-          thisJs.setState(nextStateNoSideEffects)
+          this.setState(nextStateNoSideEffects)
         }
         return ret
       }
